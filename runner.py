@@ -284,7 +284,7 @@ def model_on_val_fixed_param(data, h, c, end_date, model_type, dropout_value, lr
 
 	print("\n**********************************************************")
 	print("STEP 2")
-	print("h="+str(h)+", c="+str(c)+", end_date="+str(6-end_date)+", nrows="+str(nrows))
+	print("h="+str(h)+", c="+str(c)+", end_date="+str(end_date)+", nrows="+str(nrows))
 	print("model_type="+str(model_type)+", dropout="+str(dropout_value)+", lr_rate="+str(lr_rate))
 	print(X_train.shape, X_val.shape, X_test.shape)
 	print(y_train.shape, y_val.shape, y_test.shape)
@@ -518,9 +518,9 @@ def main():
 	data_list = my_shelve['data_list']
 
 	########################################################### choosing best 'h' and 'c' for each point
-	param_list = []
+	param_list = [(3, 16)]
 
-	for i in range(1, -1, -1):
+	for i in range(2, -1, -1):
 		# print("end_date = " + str(i))
 		# best_h, best_c = get_parameters(i)
 
@@ -552,10 +552,10 @@ def main():
 			print('ERROR shelving: {0}'.format(key))
 	s.close()
 
-	a_file = open("Results/param_list.txt", "w")
-	for row in np.array(param_list):
-		np.savetxt(a_file, row)
-	a_file.close()
+# 	a_file = open("Results/param_list.txt", "w")
+# 	for row in np.array(param_list):
+# 		np.savetxt(a_file, row)
+# 	a_file.close()
 
 	###########################################################
 	zipf = zipfile.ZipFile('Results_Step_1.zip', 'w', zipfile.ZIP_DEFLATED)
@@ -568,57 +568,59 @@ def main():
 	send_mail(mail_subject, mail_body, "", "Results_Step_1.zip")
 	###########################################################
 
-# 	########################################################### choosing best model type and dropout value and learning rate for each test point
-# 	best_model_type_list = []
-# 	best_dropout_value_list = []
-# 	best_lr_rate_list = []
-
-# 	for i in range(len(param_list)):
-# 		# print("end_date = " + str(i))
+	########################################################### choosing best model type and dropout value and learning rate for each test point
+	best_model_type_list = []
+	best_dropout_value_list = []
+	best_lr_rate_list = []
+	tmp_var = 3
+	
+	for i in range(len(param_list)):
+		# print("end_date = " + str(i))
 		
-# 		h_tmp = param_list[i][0]
-# 		c_tmp = param_list[i][1]
-# 		data_tmp = data_list[7*(h_tmp-1)+i]
+		h_tmp = param_list[i][0]
+		c_tmp = param_list[i][1]
+		data_tmp = data_list[7*(h_tmp-1)+tmp_var]
 
-# 		with mp.Pool(mp.cpu_count()) as pool:
-# 			model_results = pool.starmap(model_on_val_fixed_param, [(data_tmp, h_tmp, c_tmp, i, model_type, dropout, lr_rate) 
-# 			for model_type in range(len(types)) for dropout in dropout_list for lr_rate in lr_list])
+		with mp.Pool(mp.cpu_count()) as pool:
+			model_results = pool.starmap(model_on_val_fixed_param, [(data_tmp, h_tmp, c_tmp, tmp_var, model_type, dropout, lr_rate) 
+			for model_type in range(len(types)) for dropout in dropout_list for lr_rate in lr_list])
 		
-# 		tmp = list(itertools.chain.from_iterable(model_results))
-# 		model_results_df = pd.DataFrame(tmp)
+		tmp = list(itertools.chain.from_iterable(model_results))
+		model_results_df = pd.DataFrame(tmp)
 
-# 		model_results_df.to_csv('Results/model_results_'+str(1-i)+'.csv', index=False)
+		model_results_df.to_csv('Results/model_results_'+str(tmp_var)+'.csv', index=False)
 
-# 		tmp_df = pd.read_csv('Results/model_results_'+str(1-i)+'.csv')
+		tmp_df = pd.read_csv('Results/model_results_'+str(tmp_var)+'.csv')
 
-# 		best_model_type, best_dropout, best_lr_rate, _ = get_best_model_parameters(tmp_df)
+		best_model_type, best_dropout, best_lr_rate, _ = get_best_model_parameters(tmp_df)
 		
-# 		# print("best_lr" + str(best_lr_rate) + "\n\n")
-# 		best_model_type_list.append(int(best_model_type))
-# 		best_dropout_value_list.append(best_dropout)
-# 		best_lr_rate_list.append(best_lr_rate)
-# 	###########################################################
+		# print("best_lr" + str(best_lr_rate) + "\n\n")
+		best_model_type_list.append(int(best_model_type))
+		best_dropout_value_list.append(best_dropout)
+		best_lr_rate_list.append(best_lr_rate)
+		tmp_var = tmp_var-1
+	###########################################################
 
-# 	# save the entire session until now
-# 	shelve_filename = 'Results/step2.out'
-# 	s = shelve.open(shelve_filename, 'n')  # 'n' for new
-# 	for key in dir():
-# 		try:
-# 			s[key] = locals()[key]
-# 		except:
-# 			print('ERROR shelving: {0}'.format(key))
-# 	s.close()
+	# save the entire session until now
+	shelve_filename = 'Results/step2.out'
+	s = shelve.open(shelve_filename, 'n')  # 'n' for new
+	for key in dir():
+		try:
+			s[key] = locals()[key]
+		except:
+			print('ERROR shelving: {0}'.format(key))
+	s.close()
 
-# 	###########################################################
-# 	zipf = zipfile.ZipFile('Results_Step_2.zip', 'w', zipfile.ZIP_DEFLATED)
-# 	zipdir('Results/', zipf)
-# 	zipf.close()
+	###########################################################
+	zipf = zipfile.ZipFile('Results_Step_2.zip', 'w', zipfile.ZIP_DEFLATED)
+	zipdir('Results/', zipf)
+	zipf.close()
 
-# 	# sending mail
-# 	mail_subject = "lstm model - STEP 2"
-# 	mail_body = "Finished STEP 2"
-# 	send_mail(mail_subject, mail_body, "", "Results_Step_2.zip")
-# 	###########################################################
+	# sending mail
+	mail_subject = "lstm model - STEP 2"
+	mail_body = "Finished STEP 2"
+	send_mail(mail_subject, mail_body, "", "Results_Step_2.zip")
+	###########################################################
 
 	# a_file = open("Results/lr_rate_list.txt", "w")
 	# for row in np.array(best_lr_rate_list):
