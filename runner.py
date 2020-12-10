@@ -35,7 +35,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 Path("Results").mkdir(parents=True, exist_ok=True)
 
 r = int(sys.argv[1])
-H = 2
+H = 12
 target = 'death'
 test_size = 1
 end_date_var = 7 - int(sys.argv[2])
