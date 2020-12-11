@@ -465,10 +465,10 @@ def main():
 	zipdir('Results/', zipf)
 	zipf.close()
 
-	# sending mail
-	mail_subject = "lstm model - STEP 1 - r%s - p%s"  % (r, point)
-	mail_body = "Finished STEP 1"
-	send_mail(mail_subject, mail_body, "", zipf_name)
+# 	# sending mail
+# 	mail_subject = "lstm model - STEP 1 - r%s - p%s"  % (r, point)
+# 	mail_body = "Finished STEP 1"
+# 	send_mail(mail_subject, mail_body, "", zipf_name)
 	###########################################################
 
 	########################################################### choosing best model type and dropout value and learning rate for the point
@@ -518,10 +518,10 @@ def main():
 	zipdir('Results/', zipf)
 	zipf.close()
 
-	# sending mail
-	mail_subject = "lstm model - STEP 2 - r%s - p%s"  % (r, point)
-	mail_body = "Finished STEP 2"
-	send_mail(mail_subject, mail_body, "", zipf_name)
+# 	# sending mail
+# 	mail_subject = "lstm model - STEP 2 - r%s - p%s"  % (r, point)
+# 	mail_body = "Finished STEP 2"
+# 	send_mail(mail_subject, mail_body, "", zipf_name)
 	###########################################################
 
 	########################################################### making prediction on the test point with the best parameters which are obtained
@@ -569,10 +569,10 @@ def main():
 
 	end_time = time.time()
 
-	# sending mail
-	mail_subject = "lstm model - STEP 3 - r%s - p%s"  % (r, point)
-	mail_body = "Finished STEP 3\nThe code was ran in --- %s --- seconds" % (end_time - start_time)
-	send_mail(mail_subject, mail_body, "", zipf_name)
+# 	# sending mail
+# 	mail_subject = "lstm model - STEP 3 - r%s - p%s"  % (r, point)
+# 	mail_body = "Finished STEP 3\nThe code was ran in --- %s --- seconds" % (end_time - start_time)
+# 	send_mail(mail_subject, mail_body, "", zipf_name)
 	###########################################################
 
 	print("\nThe code was ran in --- %s --- seconds" % (end_time - start_time))
