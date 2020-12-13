@@ -2,13 +2,6 @@ import pandas as pd
 import numpy as np
 from makeHistoricalData import makeHistoricalData
 import multiprocessing as mp
-import tensorflow as tf
-from tensorflow import keras
-from keras import Sequential
-from keras.layers import LSTM
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras import backend as K
 from sklearn import preprocessing
 from sklearn.metrics import mean_absolute_error
 from pathlib import Path
@@ -25,11 +18,26 @@ import os
 import zipfile
 
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
+import tensorflow as tf
+from tensorflow import keras
+from keras import Sequential
+from keras.layers import LSTM
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras import backend as K
+
+# Set CPU as available physical device
+my_devices = tf.config.experimental.list_physical_devices(device_type='CPU')
+tf.config.experimental.set_visible_devices(devices= my_devices, device_type='CPU')
+
+
 from numpy.random import seed
 seed(84156)
 tf.random.set_seed(102487)
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # mkdir for saving the results in
 Path("Results").mkdir(parents=True, exist_ok=True)
